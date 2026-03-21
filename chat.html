@@ -60,6 +60,10 @@
     </div>
 
     <div class="input-area">
+      <div id="mobile-warning" class="mobile-warning hidden">
+        ⚠️ The AI model is ~491 MB. On mobile, loading may be slow. For the best experience,
+        <a href="https://github.com/Levi-Smokrovic/GreenMind/releases/latest" target="_blank">download the Android APK</a> instead.
+      </div>
       <button id="load-btn" class="btn btn-load" onclick="loadModel()">Load Model</button>
       <div id="chat-input-wrap" class="chat-input-wrap hidden">
         <textarea id="user-input" placeholder="Ask GreenMind anything..." rows="1"
@@ -77,6 +81,6 @@
     </footer>
   </div>
 
-  <script type="module" src="app.js?v=14"></script>
+  <script type="module" src="app.js?v=15"></script>
 </body>
 </html>
