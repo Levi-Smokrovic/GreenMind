@@ -504,7 +504,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             const Text(
-              'Climate-friendly AI that runs 100% locally.\nNo cloud servers. No CO\u2082 emissions.',
+              'Climate-friendly AI that runs 100% locally.\nNo cloud servers. Minimal CO\u2082 emissions.',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 15, color: Color(0xFF6B7280), height: 1.5),
             ),

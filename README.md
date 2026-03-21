@@ -28,7 +28,7 @@ GreenMind runs the AI model **entirely on your device**. No server. No network r
 
 | | Cloud AI (GPT, Gemini...) | 🌱 GreenMind |
 |---|---|---|
-| CO₂ per query | ~4.32g | **0g** |
+| CO₂ per query | ~4.32g | **Minimal** |
 | Water usage | ~25ml | **0ml** |
 | Privacy | Sent to servers | **Never leaves device** |
 | Offline | ❌ Requires internet | **✅ Fully offline** |
@@ -48,7 +48,7 @@ GreenMind uses **Qwen 2.5 0.5B** — a state-of-the-art small language model, Q4
 - 🔐 **100% private** — conversations never leave your device
 - 💬 **Chat history** — multiple conversations saved locally
 - ⚡ **Hardware accelerated** — multi-threaded WASM in browsers, native ARM64 on Android
-- 🌍 **Zero emissions** — no server infrastructure, no carbon footprint
+- 🌍 **Minimal emissions** — no server infrastructure, drastically reduced carbon footprint
 - 💰 **Free forever** — no subscriptions, no API keys, no accounts
 
 ## Quick Start
