@@ -3,80 +3,362 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GreenMind AI - Climate-Friendly AI</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
+  <title>GreenMind — Climate-Friendly AI</title>
+  <meta name="description" content="GreenMind is an AI assistant that runs 100% on your device. Zero cloud. Zero CO₂. Full privacy.">
   <meta name="theme-color" content="#15803d">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="icon" href="icons/icon-192.png">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-50: #f0fdf4; --green-100: #dcfce7; --green-200: #bbf7d0;
+      --green-400: #4ade80; --green-500: #22c55e; --green-600: #16a34a;
+      --green-700: #15803d; --green-800: #166534; --green-900: #14532d;
+      --gray-50: #f9fafb; --gray-100: #f3f4f6; --gray-200: #e5e7eb;
+      --gray-600: #4b5563; --gray-700: #374151; --gray-800: #1f2937;
+      --gray-900: #111827;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: var(--gray-800);
+      line-height: 1.6;
+      background: white;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 50;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--green-100);
+      padding: 14px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 1.15rem; color: var(--green-800); text-decoration: none; }
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+    .nav-links a { text-decoration: none; color: var(--gray-600); font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--green-600); }
+    .nav-cta { background: var(--green-600); color: white !important; padding: 8px 20px; border-radius: 10px; font-weight: 600; }
+    .nav-cta:hover { background: var(--green-700); }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      background: linear-gradient(160deg, var(--green-50) 0%, white 40%, var(--green-50) 100%);
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: -200px; right: -200px; width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(74,222,128,0.12) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--green-100); color: var(--green-800);
+      padding: 6px 16px; border-radius: 50px; font-size: 0.82rem; font-weight: 600;
+      margin-bottom: 24px;
+    }
+    .hero h1 { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 800; line-height: 1.1; letter-spacing: -1.5px; max-width: 800px; }
+    .hero h1 span { color: var(--green-600); }
+    .hero p { margin-top: 20px; font-size: 1.2rem; color: var(--gray-600); max-width: 560px; line-height: 1.7; }
+    .hero-actions { display: flex; gap: 16px; margin-top: 36px; flex-wrap: wrap; justify-content: center; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: 14px; font-size: 1rem; font-weight: 600; text-decoration: none; border: none; cursor: pointer; transition: all 0.2s; }
+    .btn-primary { background: var(--green-600); color: white; box-shadow: 0 4px 14px rgba(22,163,74,0.3); }
+    .btn-primary:hover { background: var(--green-700); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(22,163,74,0.35); }
+    .btn-outline { background: white; color: var(--green-700); border: 2px solid var(--green-200); }
+    .btn-outline:hover { background: var(--green-50); border-color: var(--green-400); }
+
+    /* ── Stats strip ── */
+    .stats {
+      display: flex; justify-content: center; gap: 48px; padding: 48px 24px;
+      background: var(--green-900); color: white;
+    }
+    .stat { text-align: center; }
+    .stat-val { font-size: 2.2rem; font-weight: 800; color: var(--green-400); }
+    .stat-label { font-size: 0.85rem; opacity: 0.8; margin-top: 4px; }
+
+    /* ── Section base ── */
+    section { padding: 96px 24px; }
+    .section-title { font-size: 2rem; font-weight: 800; text-align: center; letter-spacing: -0.5px; }
+    .section-sub { text-align: center; color: var(--gray-600); font-size: 1.05rem; max-width: 600px; margin: 12px auto 48px; }
+
+    /* ── Problem section ── */
+    .problem { background: var(--gray-50); }
+    .problem-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px; max-width: 1000px; margin: 0 auto;
+    }
+    .problem-card {
+      background: white; padding: 32px; border-radius: 20px;
+      border: 1px solid var(--gray-200);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .problem-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.06); }
+    .problem-icon { font-size: 2rem; margin-bottom: 16px; }
+    .problem-card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 8px; }
+    .problem-card p { color: var(--gray-600); font-size: 0.92rem; line-height: 1.6; }
+
+    /* ── Comparison ── */
+    .comparison { background: white; }
+    .compare-table {
+      max-width: 800px; margin: 0 auto;
+      border-collapse: collapse; width: 100%;
+    }
+    .compare-table th, .compare-table td { padding: 16px 20px; text-align: left; font-size: 0.92rem; }
+    .compare-table thead th {
+      background: var(--green-700); color: white; font-weight: 700;
+    }
+    .compare-table thead th:first-child { border-radius: 14px 0 0 0; }
+    .compare-table thead th:last-child { border-radius: 0 14px 0 0; }
+    .compare-table tbody tr { border-bottom: 1px solid var(--gray-200); }
+    .compare-table tbody tr:last-child { border: none; }
+    .compare-table td:first-child { font-weight: 600; color: var(--gray-700); }
+    .cloud-bad { color: #dc2626; font-weight: 600; }
+    .green-good { color: var(--green-600); font-weight: 600; }
+
+    /* ── Features ── */
+    .features { background: var(--green-50); }
+    .feature-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 28px; max-width: 1000px; margin: 0 auto;
+    }
+    .feature {
+      background: white; padding: 28px; border-radius: 18px;
+      border: 1px solid var(--green-200);
+    }
+    .feature-icon { font-size: 1.8rem; margin-bottom: 12px; }
+    .feature h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; }
+    .feature p { color: var(--gray-600); font-size: 0.88rem; line-height: 1.6; }
+
+    /* ── Download ── */
+    .download { background: white; }
+    .download-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px; max-width: 900px; margin: 0 auto;
+    }
+    .download-card {
+      background: var(--green-50); padding: 32px; border-radius: 20px;
+      border: 1px solid var(--green-200); text-align: center;
+    }
+    .download-card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 8px; }
+    .download-card p { color: var(--gray-600); font-size: 0.9rem; line-height: 1.6; }
+
+    /* ── CTA ── */
+    .cta {
+      text-align: center; padding: 80px 24px;
+      background: linear-gradient(135deg, var(--green-700), var(--green-600));
+      color: white;
+    }
+    .cta h2 { font-size: 2rem; font-weight: 800; }
+    .cta p { opacity: 0.9; margin: 12px auto 32px; max-width: 500px; font-size: 1.05rem; }
+    .cta .btn-primary { background: white; color: var(--green-700); box-shadow: 0 4px 14px rgba(0,0,0,0.15); }
+    .cta .btn-primary:hover { background: var(--green-50); }
+
+    /* ── Footer ── */
+    footer {
+      padding: 32px 24px; text-align: center;
+      background: var(--gray-900); color: var(--gray-600);
+      font-size: 0.82rem;
+    }
+    footer a { color: var(--green-400); text-decoration: none; }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .stats { flex-direction: column; gap: 24px; padding: 32px; }
+      .nav-links a:not(.nav-cta) { display: none; }
+      .compare-table { font-size: 0.82rem; }
+      .compare-table th, .compare-table td { padding: 10px 12px; }
+    }
+  </style>
 </head>
 <body>
-  <!-- Sidebar overlay -->
-  <div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
 
-  <!-- Chat history sidebar -->
-  <div id="sidebar" class="sidebar">
-    <div class="sidebar-header">
-      <span>&#127793; GreenMind AI</span>
-      <button class="sidebar-close" onclick="closeSidebar()">&times;</button>
+  <nav>
+    <a class="nav-brand" href="#">🌱 GreenMind</a>
+    <div class="nav-links">
+      <a href="#problem">Why</a>
+      <a href="#compare">Compare</a>
+      <a href="#features">Features</a>
+      <a href="#download">Download</a>
+      <a href="chat.html" class="nav-cta">Try it now →</a>
     </div>
-    <button class="sidebar-new-chat" onclick="newChat()">&#43; New Chat</button>
-    <div id="chat-list" class="chat-list">
-      <div class="no-chats">No saved chats yet</div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-badge">🌍 100% Local &bull; 0% Cloud</div>
+    <h1>AI that doesn't<br><span>cost the Earth</span></h1>
+    <p>GreenMind runs entirely on your device — no cloud servers, no data centers, no CO₂ emissions. Private, fast, and climate-friendly.</p>
+    <div class="hero-actions">
+      <a href="chat.html" class="btn btn-primary">🌱 Try in Browser</a>
+      <a href="https://github.com/Levi-Smokrovic/GreenMind/releases/latest/download/GreenMind.apk" class="btn btn-outline">📲 Download Android APK</a>
+      <a href="https://github.com/Levi-Smokrovic/GreenMind" class="btn btn-outline">View on GitHub</a>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <div class="stats" id="problem">
+    <div class="stat">
+      <div class="stat-val">552 TWh</div>
+      <div class="stat-label">Energy AI data centers will consume by 2026</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">~4.32g</div>
+      <div class="stat-label">CO₂ per ChatGPT query (cloud inference)</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">0g</div>
+      <div class="stat-label">CO₂ per GreenMind query (on-device)</div>
     </div>
   </div>
 
-  <div class="app">
-    <header>
-      <div class="logo">
-        <button class="menu-btn" onclick="openSidebar()" title="Chat history">&#9776;</button>
-        <span class="leaf">&#127793;</span>
-        <h1>GreenMind AI</h1>
-        <button class="new-chat-btn" onclick="newChat()" title="New chat">&#43;</button>
+  <!-- Problem -->
+  <section class="problem">
+    <h2 class="section-title">The hidden cost of cloud AI</h2>
+    <p class="section-sub">Every time you ask ChatGPT, Gemini, or Copilot a question, massive data centers spin up GPUs that consume enormous amounts of electricity.</p>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="problem-icon">⚡</div>
+        <h3>Extreme energy use</h3>
+        <p>Training GPT-4 consumed an estimated 50 GWh — enough to power 18,000 homes for a year. Every query adds more. AI data centers are projected to consume more electricity than many countries by 2027.</p>
       </div>
-      <p class="tagline">Climate-friendly AI &mdash; runs 100% locally on your device.</p>
-    </header>
-
-    <div id="status-bar" class="status-bar">
-      <div class="status-text">
-        <span id="status-icon" class="spinner"></span>
-        <span id="status-msg">Ready to start</span>
+      <div class="problem-card">
+        <div class="problem-icon">💧</div>
+        <h3>Massive water consumption</h3>
+        <p>Data centers use millions of liters of water daily for cooling. A single GPT-4 conversation of 20–50 questions uses about 500ml of fresh water — like drinking a bottle for every chat session.</p>
       </div>
-      <div id="progress-wrap" class="progress-wrap hidden">
-        <div id="progress-bar" class="progress-bar"></div>
-      </div>
-    </div>
-
-    <div id="chat-container" class="chat-container">
-      <div id="messages" class="messages">
-        <div class="message assistant">
-          <div class="bubble">
-            Hi! I'm <strong>GreenMind</strong> &mdash; a climate-friendly AI that runs entirely on your device.
-            No cloud servers, no CO&#8322; from data centers. Click <em>&laquo;Load Model&raquo;</em> &mdash; the model downloads once and is cached in your browser. After that, everything works offline!
-          </div>
-        </div>
+      <div class="problem-card">
+        <div class="problem-icon">🔒</div>
+        <h3>Your data, their servers</h3>
+        <p>Cloud AI sends every message you type to remote servers. Your conversations, your questions, your private thoughts — stored, logged, and potentially used for training. You have zero control.</p>
       </div>
     </div>
+  </section>
 
-    <div class="input-area">
-      <button id="load-btn" class="btn btn-load" onclick="loadModel()">Load Model</button>
-      <div id="chat-input-wrap" class="chat-input-wrap hidden">
-        <textarea id="user-input" placeholder="Ask GreenMind anything..." rows="1"
-          onkeydown="handleKey(event)"></textarea>
-        <button id="send-btn" class="btn btn-send" onclick="sendMessage()">&#10148;</button>
+  <!-- Comparison -->
+  <section class="comparison" id="compare">
+    <h2 class="section-title">GreenMind vs. Cloud AI</h2>
+    <p class="section-sub">See how on-device AI stacks up against traditional cloud-based models.</p>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Cloud AI (GPT, Gemini...)</th>
+          <th>🌱 GreenMind</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>CO₂ per query</td>
+          <td class="cloud-bad">~4.32g (server inference)</td>
+          <td class="green-good">0g (your device)</td>
+        </tr>
+        <tr>
+          <td>Water usage</td>
+          <td class="cloud-bad">~25ml per query</td>
+          <td class="green-good">0ml</td>
+        </tr>
+        <tr>
+          <td>Data privacy</td>
+          <td class="cloud-bad">Sent to remote servers</td>
+          <td class="green-good">Never leaves your device</td>
+        </tr>
+        <tr>
+          <td>Offline capable</td>
+          <td class="cloud-bad">No — requires internet</td>
+          <td class="green-good">Yes — fully offline</td>
+        </tr>
+        <tr>
+          <td>Monthly cost</td>
+          <td class="cloud-bad">$20–$200/month</td>
+          <td class="green-good">Free forever</td>
+        </tr>
+        <tr>
+          <td>Speed</td>
+          <td>Fast (server GPUs)</td>
+          <td>Good (on-device CPU/GPU)</td>
+        </tr>
+        <tr>
+          <td>Intelligence</td>
+          <td>Very high (100B+ params)</td>
+          <td>Good for daily tasks (0.5B params)</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="features">
+    <h2 class="section-title">Built different</h2>
+    <p class="section-sub">GreenMind reimagines AI from the ground up — starting with the planet.</p>
+    <div class="feature-grid">
+      <div class="feature">
+        <div class="feature-icon">🧠</div>
+        <h3>Qwen 2.5 Model</h3>
+        <p>State-of-the-art 0.5B parameter model, Q4 quantized. Smart enough for daily tasks, small enough for any device.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📱</div>
+        <h3>Works everywhere</h3>
+        <p>iOS, Android, and Web. One codebase, three platforms. Download the model once, use it forever offline.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔐</div>
+        <h3>100% private</h3>
+        <p>Your conversations never leave your device. No accounts, no telemetry, no tracking. Your AI, your rules.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">⚡</div>
+        <h3>Metal & WASM</h3>
+        <p>Hardware-accelerated on Apple Silicon via Metal GPU. Multi-threaded WebAssembly in browsers. Native ARM64 on Android.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">💬</div>
+        <h3>Chat history</h3>
+        <p>All conversations saved locally on your device. Pick up where you left off, switch between threads, never lose context.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🌍</div>
+        <h3>Open source</h3>
+        <p>Fully open source on GitHub. Inspect the code, contribute, verify there's no hidden data collection.</p>
       </div>
     </div>
+  </section>
 
-    <footer>
-      <div class="eco-stats">
-        <span id="stat-device">Device: detecting...</span>
-        <span id="stat-carbon">CO&#8322; saved: calculating...</span>
+  <!-- Download -->
+  <section class="download" id="download">
+    <h2 class="section-title">Get GreenMind</h2>
+    <p class="section-sub">Choose your platform — same climate-friendly AI everywhere.</p>
+    <div class="download-grid">
+      <div class="download-card">
+        <div class="problem-icon">🌐</div>
+        <h3>Web Browser</h3>
+        <p>No install needed. Runs in Chrome, Edge, Firefox, Safari via WebAssembly.</p>
+        <a href="chat.html" class="btn btn-primary" style="margin-top:16px;width:100%;justify-content:center;">Launch Web App</a>
       </div>
-      <p class="footer-note">Powered by GreenMind Engine &mdash; 100% local, 0% cloud</p>
-    </footer>
-  </div>
+      <div class="download-card">
+        <div class="problem-icon">🤖</div>
+        <h3>Android</h3>
+        <p>ARM64 native. Download the APK, install, and chat offline — 97 MB.</p>
+        <a href="https://github.com/Levi-Smokrovic/GreenMind/releases/latest/download/GreenMind.apk" class="btn btn-primary" style="margin-top:16px;width:100%;justify-content:center;">Download APK</a>
+      </div>
+    </div>
+  </section>
 
-  <script type="module" src="app.js?v=13"></script>
+  <!-- CTA -->
+  <section class="cta">
+    <h2>Ready to chat without the carbon?</h2>
+    <p>Try GreenMind right now in your browser. No signup, no download, no cloud. Just AI that respects the planet.</p>
+    <a href="chat.html" class="btn btn-primary">🌱 Launch GreenMind</a>
+  </section>
+
+  <footer>
+    <p>GreenMind &copy; 2026 &bull; <a href="https://github.com/Levi-Smokrovic/GreenMind">GitHub</a> &bull; Built with 💚 for the planet</p>
+  </footer>
+
 </body>
 </html>

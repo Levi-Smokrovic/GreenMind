@@ -8,7 +8,5 @@
       ]
     }
   ],
-  "rewrites": [
-    { "source": "/", "destination": "/product.html" }
-  ]
+  "rewrites": []
 }

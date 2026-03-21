@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GreenMind AI - Climate-Friendly AI</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#15803d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+</head>
+<body>
+  <!-- Sidebar overlay -->
+  <div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+  <!-- Chat history sidebar -->
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <span>&#127793; GreenMind AI</span>
+      <button class="sidebar-close" onclick="closeSidebar()">&times;</button>
+    </div>
+    <button class="sidebar-new-chat" onclick="newChat()">&#43; New Chat</button>
+    <div id="chat-list" class="chat-list">
+      <div class="no-chats">No saved chats yet</div>
+    </div>
+  </div>
+
+  <div class="app">
+    <header>
+      <div class="logo">
+        <button class="menu-btn" onclick="openSidebar()" title="Chat history">&#9776;</button>
+        <span class="leaf">&#127793;</span>
+        <h1>GreenMind AI</h1>
+        <button class="new-chat-btn" onclick="newChat()" title="New chat">&#43;</button>
+      </div>
+      <p class="tagline">Climate-friendly AI &mdash; runs 100% locally on your device.</p>
+    </header>
+
+    <div id="status-bar" class="status-bar">
+      <div class="status-text">
+        <span id="status-icon" class="spinner"></span>
+        <span id="status-msg">Ready to start</span>
+      </div>
+      <div id="progress-wrap" class="progress-wrap hidden">
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
+    </div>
+
+    <div id="chat-container" class="chat-container">
+      <div id="messages" class="messages">
+        <div class="message assistant">
+          <div class="bubble">
+            Hi! I'm <strong>GreenMind</strong> &mdash; a climate-friendly AI that runs entirely on your device.
+            No cloud servers, no CO&#8322; from data centers. Click <em>&laquo;Load Model&raquo;</em> &mdash; the model downloads once and is cached in your browser. After that, everything works offline!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-area">
+      <button id="load-btn" class="btn btn-load" onclick="loadModel()">Load Model</button>
+      <div id="chat-input-wrap" class="chat-input-wrap hidden">
+        <textarea id="user-input" placeholder="Ask GreenMind anything..." rows="1"
+          onkeydown="handleKey(event)"></textarea>
+        <button id="send-btn" class="btn btn-send" onclick="sendMessage()">&#10148;</button>
+      </div>
+    </div>
+
+    <footer>
+      <div class="eco-stats">
+        <span id="stat-device">Device: detecting...</span>
+        <span id="stat-carbon">CO&#8322; saved: calculating...</span>
+      </div>
+      <p class="footer-note">Powered by GreenMind Engine &mdash; 100% local, 0% cloud</p>
+    </footer>
+  </div>
+
+  <script type="module" src="app.js?v=13"></script>
+</body>
+</html>

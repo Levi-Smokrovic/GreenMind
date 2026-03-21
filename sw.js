@@ -1,7 +1,7 @@
 const CACHE_NAME = "greenmind-v3";
 const ASSETS = [
   "/",
-  "/index.html",
+  "/chat.html",
   "/style.css",
   "/app.js",
   "/manifest.json",
