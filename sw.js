@@ -1,4 +1,4 @@
-const CACHE_NAME = "greenmind-v3";
+const CACHE_NAME = "greenmind-v4";
 const ASSETS = [
   "/",
   "/chat.html",

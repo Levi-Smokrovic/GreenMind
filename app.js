@@ -397,11 +397,7 @@ function clearChat() {
 
 // --- Service Worker ---
 if ("serviceWorker" in navigator) {
-  caches.keys().then(keys => keys.forEach(k => caches.delete(k)));
-  navigator.serviceWorker.getRegistrations().then(regs => {
-    regs.forEach(r => r.unregister());
-    setTimeout(() => navigator.serviceWorker.register("/sw.js"), 500);
-  });
+  navigator.serviceWorker.register("/sw.js").catch(() => {});
 }
 
 // --- Init ---
