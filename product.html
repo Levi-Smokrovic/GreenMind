@@ -134,6 +134,19 @@
     .feature h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; }
     .feature p { color: var(--gray-600); font-size: 0.88rem; line-height: 1.6; }
 
+    /* ── Download ── */
+    .download { background: white; }
+    .download-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px; max-width: 900px; margin: 0 auto;
+    }
+    .download-card {
+      background: var(--green-50); padding: 32px; border-radius: 20px;
+      border: 1px solid var(--green-200); text-align: center;
+    }
+    .download-card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 8px; }
+    .download-card p { color: var(--gray-600); font-size: 0.9rem; line-height: 1.6; }
+
     /* ── CTA ── */
     .cta {
       text-align: center; padding: 80px 24px;
@@ -170,6 +183,7 @@
       <a href="#problem">Why</a>
       <a href="#compare">Compare</a>
       <a href="#features">Features</a>
+      <a href="#download">Download</a>
       <a href="index.html" class="nav-cta">Try it now →</a>
     </div>
   </nav>
@@ -181,6 +195,7 @@
     <p>GreenMind runs entirely on your device — no cloud servers, no data centers, no CO₂ emissions. Private, fast, and climate-friendly.</p>
     <div class="hero-actions">
       <a href="index.html" class="btn btn-primary">🌱 Try in Browser</a>
+      <a href="https://github.com/Levi-Smokrovic/GreenMind/releases/latest/download/GreenMind.apk" class="btn btn-outline">📲 Download Android APK</a>
       <a href="https://github.com/Levi-Smokrovic/GreenMind" class="btn btn-outline">View on GitHub</a>
     </div>
   </section>
@@ -310,6 +325,32 @@
         <div class="feature-icon">🌍</div>
         <h3>Open source</h3>
         <p>Fully open source on GitHub. Inspect the code, contribute, verify there's no hidden data collection.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Download -->
+  <section class="download" id="download">
+    <h2 class="section-title">Get GreenMind</h2>
+    <p class="section-sub">Choose your platform — same climate-friendly AI everywhere.</p>
+    <div class="download-grid">
+      <div class="download-card">
+        <div class="problem-icon">🌐</div>
+        <h3>Web Browser</h3>
+        <p>No install needed. Runs in Chrome, Edge, Firefox, Safari via WebAssembly.</p>
+        <a href="index.html" class="btn btn-primary" style="margin-top:16px;width:100%;justify-content:center;">Launch Web App</a>
+      </div>
+      <div class="download-card">
+        <div class="problem-icon">🤖</div>
+        <h3>Android</h3>
+        <p>ARM64 native. Download the APK, install, and chat offline — 97 MB.</p>
+        <a href="https://github.com/Levi-Smokrovic/GreenMind/releases/latest/download/GreenMind.apk" class="btn btn-primary" style="margin-top:16px;width:100%;justify-content:center;">Download APK</a>
+      </div>
+      <div class="download-card">
+        <div class="problem-icon">🍎</div>
+        <h3>iOS</h3>
+        <p>Metal GPU accelerated on iPhone & iPad. Build from source via Xcode.</p>
+        <a href="https://github.com/Levi-Smokrovic/GreenMind" class="btn btn-outline" style="margin-top:16px;width:100%;justify-content:center;">View Source</a>
       </div>
     </div>
   </section>
