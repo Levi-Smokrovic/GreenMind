@@ -73,6 +73,43 @@ Download the APK from [GitHub Releases](https://github.com/Levi-Smokrovic/GreenM
 flutter build apk --release --target-platform android-arm64
 ```
 
+### iOS
+
+Apple doesn't allow distributing IPA files outside the App Store, so you need to build and install from source using Xcode.
+
+**Requirements:**
+- macOS with Xcode installed
+- An Apple ID (free account works for personal devices)
+- Flutter SDK installed
+- An iPhone connected via USB
+
+**Steps:**
+
+```bash
+# Clone and prepare
+git clone https://github.com/Levi-Smokrovic/GreenMind.git
+cd GreenMind
+
+# Install dependencies
+flutter pub get
+cd ios && pod install && cd ..
+
+# Build (builds take ~2-3 minutes)
+flutter build ios --release
+
+# Install on connected iPhone via ios-deploy
+# (install: brew install ios-deploy)
+ios-deploy --bundle build/ios/iphoneos/Runner.app
+```
+
+**Or via Xcode:**
+1. Open `ios/Runner.xcworkspace` in Xcode
+2. Select your Apple ID under Signing & Capabilities
+3. Select your iPhone as the build target
+4. Press Run (⌘R)
+
+> **Note:** On first launch, go to Settings → General → VPN & Device Management and trust your developer certificate.
+
 ### Deploy to Vercel
 
 The repo includes `vercel.json` with COOP/COEP headers pre-configured. Just import the GitHub repo on [vercel.com](https://vercel.com) — no build step needed.

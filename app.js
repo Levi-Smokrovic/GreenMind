@@ -177,6 +177,19 @@ function updateCarbonStats() {
 
 // --- Load model ---
 async function loadModel() {
+  // Warn mobile users about performance
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if (isMobile) {
+    const proceed = confirm(
+      "⚠️ Mobile browser warning\n\n" +
+      "The AI model is ~491 MB and runs in WebAssembly, which is very slow on mobile browsers.\n\n" +
+      "For the best mobile experience, use the native Android APK instead (much faster, GPU accelerated).\n\n" +
+      "Download APK: github.com/Levi-Smokrovic/GreenMind/releases\n\n" +
+      "Continue loading in browser anyway?"
+    );
+    if (!proceed) return;
+  }
+
   loadBtn.disabled = true;
   loadBtn.textContent = "Loading...";
   progressWrap.classList.remove("hidden");
