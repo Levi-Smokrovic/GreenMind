@@ -53,3 +53,4 @@ app.*.map.json
 # Native build outputs
 /build/
 *.framework/
+.vercel

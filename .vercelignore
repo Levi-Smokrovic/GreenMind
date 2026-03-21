@@ -1,0 +1,26 @@
+# Flutter / Dart
+build/
+.dart_tool/
+.packages
+lib/
+test/
+android/
+ios/
+web/
+linux/
+macos/
+windows/
+pubspec.yaml
+pubspec.lock
+analysis_options.yaml
+devtools_options.yaml
+*.iml
+
+# Dev tools
+serve.py
+.idea/
+.vscode/
+*.swp
+
+# Git
+.git/
