@@ -1,0 +1,24 @@
+{
+  "name": "GreenMind AI - Climate-Friendly AI",
+  "short_name": "GreenMind",
+  "description": "Climate-friendly AI that runs locally — no cloud servers, no CO₂",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#14532d",
+  "theme_color": "#15803d",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
