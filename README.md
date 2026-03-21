@@ -7,7 +7,7 @@
 An AI assistant that runs **100% on your device** — no cloud, no data centers, no CO₂ emissions.  
 Private, fast, and climate-friendly.
 
-[Try in Browser](https://greenmind-brown.vercel.app/chat.html) · [Download APK](https://github.com/Levi-Smokrovic/GreenMind/releases/latest/download/GreenMind.apk) · [Product Page](https://greenmind-brown.vercel.app)
+[Try in Browser](https://greenmind-ai.vercel.app/chat.html) · [Download APK](https://github.com/Levi-Smokrovic/GreenMind/releases/latest/download/GreenMind.apk) · [Product Page](https://greenmind-ai.vercel.app)
 
 </div>
 
