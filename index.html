@@ -12,11 +12,28 @@
   <link rel="apple-touch-icon" href="icons/icon-192.png">
 </head>
 <body>
+  <!-- Sidebar overlay -->
+  <div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+  <!-- Chat history sidebar -->
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <span>&#127793; GreenMind AI</span>
+      <button class="sidebar-close" onclick="closeSidebar()">&times;</button>
+    </div>
+    <button class="sidebar-new-chat" onclick="newChat()">&#43; New Chat</button>
+    <div id="chat-list" class="chat-list">
+      <div class="no-chats">No saved chats yet</div>
+    </div>
+  </div>
+
   <div class="app">
     <header>
       <div class="logo">
+        <button class="menu-btn" onclick="openSidebar()" title="Chat history">&#9776;</button>
         <span class="leaf">&#127793;</span>
         <h1>GreenMind AI</h1>
+        <button class="new-chat-btn" onclick="newChat()" title="New chat">&#43;</button>
       </div>
       <p class="tagline">Climate-friendly AI &mdash; runs 100% locally on your device.</p>
     </header>
@@ -45,8 +62,7 @@
     <div class="input-area">
       <button id="load-btn" class="btn btn-load" onclick="loadModel()">Load Model</button>
       <div id="chat-input-wrap" class="chat-input-wrap hidden">
-        <button class="btn btn-clear" onclick="clearChat()" title="Clear chat">&#128465;</button>
-        <textarea id="user-input" placeholder="Type your message..." rows="1"
+        <textarea id="user-input" placeholder="Ask GreenMind anything..." rows="1"
           onkeydown="handleKey(event)"></textarea>
         <button id="send-btn" class="btn btn-send" onclick="sendMessage()">&#10148;</button>
       </div>
@@ -57,10 +73,10 @@
         <span id="stat-device">Device: detecting...</span>
         <span id="stat-carbon">CO&#8322; saved: calculating...</span>
       </div>
-      <p class="footer-note">Powered by GreenMind Engine &mdash; 100% local on your device, 0% cloud</p>
+      <p class="footer-note">Powered by GreenMind Engine &mdash; 100% local, 0% cloud</p>
     </footer>
   </div>
 
-  <script type="module" src="app.js?v=10"></script>
+  <script type="module" src="app.js?v=13"></script>
 </body>
 </html>

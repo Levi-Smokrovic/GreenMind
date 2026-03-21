@@ -1,4 +1,4 @@
-import { Wllama } from 'https://cdn.jsdelivr.net/npm/@wllama/wllama@latest/esm/index.js';
+import { Wllama } from 'https://cdn.jsdelivr.net/npm/@wllama/wllama@2.3.7/esm/index.js';
 
 // --- Config ---
 // Qwen2.5-0.5B-Instruct — Q4_K_M quantized, ~491 MB, cached in browser after first download
@@ -7,18 +7,12 @@ const MODEL_HF_FILE = 'qwen2.5-0.5b-instruct-q4_k_m.gguf';
 const STORAGE_KEY = "greenmind_data";
 
 const WASM_PATHS = {
-  'single-thread/wllama.wasm': 'https://cdn.jsdelivr.net/npm/@wllama/wllama@latest/esm/single-thread/wllama.wasm',
-  'multi-thread/wllama.wasm': 'https://cdn.jsdelivr.net/npm/@wllama/wllama@latest/esm/multi-thread/wllama.wasm',
+  'single-thread/wllama.wasm': 'https://cdn.jsdelivr.net/npm/@wllama/wllama@2.3.7/esm/single-thread/wllama.wasm',
+  'multi-thread/wllama.wasm': 'https://cdn.jsdelivr.net/npm/@wllama/wllama@2.3.7/esm/multi-thread/wllama.wasm',
 };
 
-// System prompt — stronger identity + accuracy guardrails
-const SYSTEM_PROMPT = `Your name is GreenMind. You are a climate-friendly AI assistant.
-Rules:
-- You were made by the GreenMind team. You are NOT made by Google, OpenAI, or any other company.
-- Never mention Google, Qwen, Alibaba, or any AI company.
-- Give short, accurate answers. Only state facts you are sure about.
-- If you are not sure, say "I'm not sure about that."
-- Use metric units (grams, kg, Celsius, km).`;
+// System prompt — same as mobile apps
+const SYSTEM_PROMPT = `You are GreenMind, a helpful and concise AI assistant that runs locally on the user's device. You are climate-friendly because you use no cloud servers. Keep answers clear and helpful.`;
 
 // --- State ---
 let wllama = null;
@@ -26,20 +20,80 @@ let isGenerating = false;
 let messageCount = 0;
 let chatHistory = [];
 
+// Multi-chat persistence
+const CHATS_KEY = "greenmind_chats";
+let savedChats = []; // [{id, title, messages, messageCount}]
+let activeChatId = null;
+
 // --- Persistence ---
 function saveState() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ chatHistory, messageCount })); } catch {}
+  if (chatHistory.length === 0) return;
+  const title = chatHistory[0]?.content?.substring(0, 40) || 'New chat';
+  if (activeChatId) {
+    const idx = savedChats.findIndex(c => c.id === activeChatId);
+    if (idx >= 0) savedChats[idx] = { id: activeChatId, title, messages: [...chatHistory], messageCount };
+  } else {
+    activeChatId = Date.now().toString();
+    savedChats.unshift({ id: activeChatId, title, messages: [...chatHistory], messageCount });
+  }
+  try { localStorage.setItem(CHATS_KEY, JSON.stringify(savedChats)); } catch {}
+  renderChatList();
 }
-function loadState() {
+
+function loadAllChats() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) { const d = JSON.parse(raw); chatHistory = d.chatHistory || []; messageCount = d.messageCount || 0; }
+    const raw = localStorage.getItem(CHATS_KEY);
+    if (raw) savedChats = JSON.parse(raw);
+  } catch {}
+  // Migrate old single-chat data
+  try {
+    const old = localStorage.getItem(STORAGE_KEY);
+    if (old) {
+      const d = JSON.parse(old);
+      if (d.chatHistory?.length) {
+        const id = Date.now().toString();
+        savedChats.unshift({ id, title: d.chatHistory[0]?.content?.substring(0, 40) || 'Old chat', messages: d.chatHistory, messageCount: d.messageCount || 0 });
+        localStorage.setItem(CHATS_KEY, JSON.stringify(savedChats));
+      }
+      localStorage.removeItem(STORAGE_KEY);
+    }
   } catch {}
 }
-function clearState() {
-  localStorage.removeItem(STORAGE_KEY);
+
+function loadChat(chat) {
+  chatHistory = [...chat.messages];
+  messageCount = chat.messageCount || 0;
+  activeChatId = chat.id;
+  renderMessages();
+  updateCarbonStats();
+  closeSidebar();
+}
+
+function deleteChat(id) {
+  savedChats = savedChats.filter(c => c.id !== id);
+  if (activeChatId === id) { activeChatId = null; chatHistory = []; messageCount = 0; renderMessages(); updateCarbonStats(); }
+  try { localStorage.setItem(CHATS_KEY, JSON.stringify(savedChats)); } catch {}
+  renderChatList();
+}
+
+function newChat() {
+  activeChatId = null;
   chatHistory = [];
   messageCount = 0;
+  renderMessages();
+  updateCarbonStats();
+  closeSidebar();
+  if (wllama) userInput.focus();
+}
+
+function clearState() {
+  localStorage.removeItem(CHATS_KEY);
+  localStorage.removeItem(STORAGE_KEY);
+  savedChats = [];
+  activeChatId = null;
+  chatHistory = [];
+  messageCount = 0;
+  renderChatList();
 }
 
 // --- DOM ---
@@ -55,6 +109,52 @@ const userInput = document.getElementById("user-input");
 const sendBtn = document.getElementById("send-btn");
 const statDevice = document.getElementById("stat-device");
 const statCarbon = document.getElementById("stat-carbon");
+const sidebar = document.getElementById("sidebar");
+const sidebarOverlay = document.getElementById("sidebar-overlay");
+const chatListEl = document.getElementById("chat-list");
+
+// --- Sidebar ---
+function openSidebar() { sidebar?.classList.add("open"); sidebarOverlay?.classList.add("open"); }
+function closeSidebar() { sidebar?.classList.remove("open"); sidebarOverlay?.classList.remove("open"); }
+
+function renderChatList() {
+  if (!chatListEl) return;
+  if (savedChats.length === 0) {
+    chatListEl.innerHTML = '<div class="no-chats">No saved chats yet</div>';
+    return;
+  }
+  chatListEl.innerHTML = savedChats.map(c => `
+    <div class="chat-item${c.id === activeChatId ? ' active' : ''}" data-id="${escapeHtml(c.id)}">
+      <div class="chat-item-text" onclick="loadChatById('${escapeHtml(c.id)}')">
+        <div class="chat-item-title">${escapeHtml(c.title)}</div>
+        <div class="chat-item-meta">${c.messages.length} messages</div>
+      </div>
+      <button class="chat-item-del" onclick="deleteChatById('${escapeHtml(c.id)}')" title="Delete">&times;</button>
+    </div>
+  `).join('');
+}
+
+// Global helpers for onclick handlers
+window.loadChatById = (id) => { const c = savedChats.find(x => x.id === id); if (c) loadChat(c); };
+window.deleteChatById = (id) => deleteChat(id);
+window.openSidebar = openSidebar;
+window.closeSidebar = closeSidebar;
+window.newChat = newChat;
+
+function renderMessages() {
+  // Clear all except the welcome message
+  messagesDiv.innerHTML = '';
+  if (chatHistory.length === 0) {
+    messagesDiv.innerHTML = `<div class="message assistant"><div class="bubble">
+      Hi! I'm <strong>GreenMind</strong> &mdash; a climate-friendly AI that runs entirely on your device.
+      No cloud servers, no CO&#8322; from data centers. Start typing to chat!</div></div>`;
+    return;
+  }
+  for (const msg of chatHistory) {
+    if (msg.role === "user") addMessage("user", escapeHtml(msg.content));
+    else if (msg.role === "assistant") addMessage("assistant", formatText(msg.content));
+  }
+}
 
 // --- Detect device ---
 function detectDevice() {
@@ -200,9 +300,15 @@ async function sendMessage() {
         penalty_repeat: 1.2,
         penalty_last_n: 64,
       },
-      stopTokens: ["<|im_end|>", "<|im_start|>", "<|endoftext|>"],
-      onNewToken: (_token, _piece, { completionText }) => {
-        const cleaned = completionText
+      onNewToken: (_token, _piece, textOrObj, _extra) => {
+        // Handle both wllama v1 (object) and v2 (string) callback signatures
+        const currentText = typeof textOrObj === 'string'
+          ? textOrObj
+          : (textOrObj?.completionText ?? '');
+        if (!currentText) return;
+        const cleaned = currentText
+          .replace(/<\|im_end\|>.*$/s, "")
+          .replace(/<\|im_start\|>.*$/s, "")
           .replace(/Google( Cloud Platform| AI| DeepMind)?/gi, "GreenMind")
           .replace(/\bQwen\b/gi, "GreenMind")
           .replace(/\bAlibaba\b/gi, "GreenMind team")
@@ -213,7 +319,9 @@ async function sendMessage() {
       },
     });
 
-    let cleanResult = (result || "").replace(/<\|im_end\|>.*$/s, "").replace(/<\|im_start\|>.*$/s, "").trim();
+    // Handle both string and object return types
+    const rawResult = typeof result === 'string' ? result : (result || "").toString();
+    let cleanResult = rawResult.replace(/<\|im_end\|>.*$/s, "").replace(/<\|im_start\|>.*$/s, "").trim();
     // Post-process: strip any leaked identity references
     cleanResult = cleanResult
       .replace(/Google( Cloud Platform| AI| DeepMind)?/gi, "GreenMind")
@@ -268,20 +376,22 @@ userInput.addEventListener("input", () => {
 });
 
 // --- Restore chat ---
-function restoreChat() {
-  loadState();
-  if (chatHistory.length === 0) return;
-  for (const msg of chatHistory) {
-    if (msg.role === "user") addMessage("user", escapeHtml(msg.content));
-    else if (msg.role === "assistant") addMessage("assistant", formatText(msg.content));
+function restoreChats() {
+  loadAllChats();
+  renderChatList();
+  // Load the most recent chat if any
+  if (savedChats.length > 0) {
+    chatHistory = [...savedChats[0].messages];
+    messageCount = savedChats[0].messageCount || 0;
+    activeChatId = savedChats[0].id;
+    renderMessages();
   }
 }
 
 // --- Clear chat ---
 function clearChat() {
   clearState();
-  const allMsgs = messagesDiv.querySelectorAll(".message");
-  allMsgs.forEach((el, i) => { if (i > 0) el.remove(); });
+  renderMessages();
   updateCarbonStats();
 }
 
@@ -296,7 +406,7 @@ if ("serviceWorker" in navigator) {
 
 // --- Init ---
 detectDevice();
-restoreChat();
+restoreChats();
 updateCarbonStats();
 
 window.loadModel = loadModel;
