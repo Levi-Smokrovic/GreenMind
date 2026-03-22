@@ -17,7 +17,7 @@ Private, fast, and climate-friendly.
 
 Every time you ask ChatGPT or Gemini a question, massive data centers spin up GPUs that:
 
-- **Consume ~4.32g CO₂ per query** (cloud inference)
+- **Consume 2–3g CO₂ per query** (cloud inference)
 - **Use ~25ml of water per query** for cooling
 - **Send your private data** to remote servers
 - AI data centers are projected to consume **552 TWh by 2026** — more electricity than many countries
@@ -28,7 +28,7 @@ GreenMind runs the AI model **entirely on your device**. No server. No network r
 
 | | Cloud AI (GPT, Gemini...) | 🌱 GreenMind |
 |---|---|---|
-| CO₂ per query | ~4.32g | **Minimal** |
+| CO₂ per query | 2–3g | **Minimal** |
 | Water usage | ~25ml | **0ml** |
 | Privacy | Sent to servers | **Never leaves device** |
 | Offline | ❌ Requires internet | **✅ Fully offline** |
